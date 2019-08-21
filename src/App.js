@@ -22,6 +22,20 @@ function App() {
         dataHook()
     }, []);
 
+    useEffect(() => {
+        const authHook = () => {
+            const loggedUserToken = window.localStorage.getItem('token')
+
+            if (loggedUserToken) {
+                const token = JSON.parse(loggedUserToken)
+
+                setClaim(atob(token.split('.')[1]))
+                setToken(`bearer ${ token }`)
+            }
+        }
+        authHook()
+    }, [])
+
     const handleLogin = async (e) => {
         e.preventDefault()
 
@@ -31,15 +45,21 @@ function App() {
         }
         try {
             const response = await loginServices.login(credential)
+            window.localStorage.setItem('token', JSON.stringify(response.token))
 
             setClaim(JSON.parse(atob(response.token.split('.')[1])))
-            setToken(response.token)
+            setToken(`bearer ${ response.token }`)
 
             setUsername('')
             setPassword('')
         } catch (error) {
             console.log("login failure")
         }
+    }
+    const handleLogout = () => {
+        setClaim(null)
+        setToken(null)
+        window.localStorage.removeItem('token')
     }
 
     if (token === null) {
@@ -55,6 +75,7 @@ function App() {
             <Blogs
                 claim={ claim }
                 blogs={ blogs }
+                handleLogout={ () => handleLogout() }
             />
         )
     }
