@@ -2,15 +2,19 @@ import React, { useState, useEffect, useLayoutEffect } from 'react'
 
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 
 import blogServices from './services/blogs'
 import loginServices from './services/login'
 
 function App() {
-    const [claim, setClaim] = useState(null)
-    const [token, setToken] = useState(null)
-    const [username, setUsername] = useState('Zues')
-    const [password, setPassword] = useState('123456')
+    const [user, setUser] = useState(null)
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
 
     const [blogs, setBlogs] = useState([])
 
@@ -29,8 +33,11 @@ function App() {
             if (loggedUserToken) {
                 const token = JSON.parse(loggedUserToken)
 
-                setClaim(JSON.parse(atob(token.split('.')[1])))
-                setToken(`bearer ${ token }`)
+            setUser({
+                claim: JSON.parse(atob(token.split('.')[1])),
+                token: token
+            })
+
             }
         }
         authHook()
@@ -43,12 +50,15 @@ function App() {
             username: username,
             password: password
         }
+
         try {
             const response = await loginServices.login(credential)
             window.localStorage.setItem('token', JSON.stringify(response.token))
 
-            setClaim(JSON.parse(atob(response.token.split('.')[1])))
-            setToken(`bearer ${ response.token }`)
+            setUser({
+                claim: JSON.parse(atob(response.token.split('.')[1])),
+                token: response.token
+            })
 
             setUsername('')
             setPassword('')
@@ -56,13 +66,38 @@ function App() {
             console.log("login failure")
         }
     }
+
     const handleLogout = () => {
-        setClaim(null)
-        setToken(null)
+        setUser(null)
         window.localStorage.removeItem('token')
     }
 
-    if (token === null) {
+    const handleAddBlog = async (e) => {
+        e.preventDefault()
+
+        const blog = {
+            title: title,
+            author: author,
+            url: url
+        }
+
+        try {
+            blogServices.setToken(user.token)
+            const response = await blogServices.create(blog)
+
+            setTitle('')
+            setAuthor('')
+            setUrl('')
+
+            setBlogs(blogs.concat(response))
+
+        } catch (error) {
+            console.log(error)
+            console.log("blog create failure")
+        }
+    }
+
+    if (user === null) {
         return (
             <LoginForm
                 handleUsernameChange={ (e) => setUsername(e.target.value) }
@@ -72,11 +107,19 @@ function App() {
         )
     } else {
         return (
-            <Blogs
-                claim={ claim }
-                blogs={ blogs }
-                handleLogout={ () => handleLogout() }
-            />
+            <div>
+                <BlogForm
+                    handleTitleChange={ (e) => setTitle(e.target.value) }
+                    handleAuthorChange={ (e) => setAuthor(e.target.value) }
+                    handleUrlChange={ (e) => setUrl(e.target.value) }
+                    handleAddBlog={ (e) => handleAddBlog(e) }
+                />
+                <Blogs
+                    user={ user }
+                    blogs={ blogs }
+                    handleLogout={ () => handleLogout() }
+                />
+            </div>
         )
     }
 }
