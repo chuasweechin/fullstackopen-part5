@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect } from 'react'
 
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
@@ -22,19 +22,19 @@ function App() {
         dataHook()
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const authHook = () => {
             const loggedUserToken = window.localStorage.getItem('token')
 
             if (loggedUserToken) {
                 const token = JSON.parse(loggedUserToken)
 
-                setClaim(atob(token.split('.')[1]))
+                setClaim(JSON.parse(atob(token.split('.')[1])))
                 setToken(`bearer ${ token }`)
             }
         }
         authHook()
-    }, [])
+    },[])
 
     const handleLogin = async (e) => {
         e.preventDefault()

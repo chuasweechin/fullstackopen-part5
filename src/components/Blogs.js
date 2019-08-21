@@ -8,6 +8,8 @@ const Blogs = ({ claim, blogs, handleLogout }) => {
         )
     })
 
+    console.log(claim)
+
     return (
         <div>
             <h2>Blogs</h2>
