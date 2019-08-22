@@ -3,9 +3,12 @@ import React, { useState, useEffect, useLayoutEffect } from 'react'
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 
 import blogServices from './services/blogs'
 import loginServices from './services/login'
+
+import './index.css'
 
 function App() {
     const [user, setUser] = useState(null)
@@ -17,6 +20,7 @@ function App() {
     const [url, setUrl] = useState('')
 
     const [blogs, setBlogs] = useState([])
+    const [message, setMessage] = useState(null)
 
     useEffect(() => {
         const dataHook = async () => {
@@ -63,7 +67,14 @@ function App() {
             setUsername('')
             setPassword('')
         } catch (error) {
-            console.log("login failure")
+            setMessage({
+                "text": error.response.data.error,
+                "type": "error"
+            })
+
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
         }
     }
 
@@ -91,23 +102,42 @@ function App() {
 
             setBlogs(blogs.concat(response))
 
+            setMessage({
+                "text": `a new blog "${ blog.title }" added`,
+                "type": "info"
+            })
+
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
+
         } catch (error) {
-            console.log(error)
-            console.log("blog create failure")
+            setMessage({
+                "text": error.response.data.error,
+                "type": "error"
+            })
+
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
         }
     }
 
     if (user === null) {
         return (
-            <LoginForm
-                handleUsernameChange={ (e) => setUsername(e.target.value) }
-                handlePasswordChange={ (e) => setPassword(e.target.value) }
-                handleLogin={ (e) => handleLogin(e) }
-            />
+            <div>
+                { message !== null ? <Notification message={ message } /> : null }
+                <LoginForm
+                    handleUsernameChange={ (e) => setUsername(e.target.value) }
+                    handlePasswordChange={ (e) => setPassword(e.target.value) }
+                    handleLogin={ (e) => handleLogin(e) }
+                />
+            </div>
         )
     } else {
         return (
             <div>
+                { message !== null ? <Notification message={ message } /> : null }
                 <BlogForm
                     handleTitleChange={ (e) => setTitle(e.target.value) }
                     handleAuthorChange={ (e) => setAuthor(e.target.value) }
