@@ -1,23 +1,19 @@
 import React from 'react'
 import Blog from './Blog'
 
-const Blogs = ({ user, blogs, handleLogout }) => {
+const Blogs = ({ user, blogs, handleBlogLike }) => {
     const elements = blogs.map(b => {
         return (
-            <Blog key={ b.id } blog={ b }/>
+            <Blog
+                key={ b.id }
+                blog={ b }
+                handleBlogLike={ handleBlogLike }
+            />
         )
     })
 
     return (
         <div>
-            <h2>Blogs</h2>
-            <div>
-                { user.claim.name } logged in
-                <button onClick={ handleLogout }>
-                    Logout
-                </button>
-            </div>
-            <br/>
             { elements }
         </div>
     )

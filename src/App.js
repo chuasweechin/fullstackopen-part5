@@ -85,6 +85,7 @@ function App() {
 
     const handleAddBlog = async (e) => {
         e.preventDefault()
+        e.target.reset()
 
         const blog = {
             title: title,
@@ -123,6 +124,32 @@ function App() {
         }
     }
 
+    const handleBlogLike = async (e) => {
+        const selectBlogId = e.target.value
+        const selectedBlog = blogs.find(b => b.id === selectBlogId);
+
+        const blog = {
+            ...selectedBlog,
+            likes: selectedBlog.likes + 1,
+            user: selectedBlog.user[0].id
+        }
+
+        try {
+            const response = await blogServices.update(selectBlogId, blog)
+            setBlogs(blogs.map(b => b.id === selectBlogId ? response : b))
+
+        } catch (error) {
+            setMessage({
+                "text": error.response.data.error,
+                "type": "error"
+            })
+
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
+        }
+    }
+
     if (user === null) {
         return (
             <div>
@@ -138,16 +165,27 @@ function App() {
         return (
             <div>
                 { message !== null ? <Notification message={ message } /> : null }
+                <h2>Blogs</h2>
+                <div>
+                    { user.claim.name } logged in
+                    <button onClick={ handleLogout }>
+                        Logout
+                    </button>
+                </div>
+
                 <BlogForm
                     handleTitleChange={ (e) => setTitle(e.target.value) }
                     handleAuthorChange={ (e) => setAuthor(e.target.value) }
                     handleUrlChange={ (e) => setUrl(e.target.value) }
                     handleAddBlog={ (e) => handleAddBlog(e) }
                 />
+
+                <br/>
+
                 <Blogs
                     user={ user }
                     blogs={ blogs }
-                    handleLogout={ () => handleLogout() }
+                    handleBlogLike={ (e) => handleBlogLike(e) }
                 />
             </div>
         )
