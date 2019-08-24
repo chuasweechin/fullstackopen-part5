@@ -92,7 +92,9 @@ function App() {
         const blog = {
             title: title,
             author: author,
-            url: url
+            url: url,
+            likes: 0,
+            user: user.claim.id
         }
 
         try {
@@ -152,6 +154,31 @@ function App() {
         }
     }
 
+    const handleBlogRemove = async (e) => {
+        const selectBlogId = e.target.value
+        const selectedBlog = blogs.find(b => b.id === selectBlogId);
+
+        const msg = `remove blog ${ selectedBlog.title }`
+
+        try {
+            if (window.confirm(msg) === true) {
+                blogServices.setToken(user.token)
+                const response = await blogServices.remove(selectBlogId)
+                setBlogs(blogs.filter(b => b.id !== selectBlogId))
+            }
+
+        } catch (error) {
+            setMessage({
+                "text": error.response.data.error,
+                "type": "error"
+            })
+
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
+        }
+    }
+
     if (user === null) {
         return (
             <div>
@@ -188,6 +215,7 @@ function App() {
                     user={ user }
                     blogs={ blogs }
                     handleBlogLike={ (e) => handleBlogLike(e) }
+                    handleBlogRemove={ (e) => handleBlogRemove(e) }
                 />
             </div>
         )
