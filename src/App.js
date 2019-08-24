@@ -30,7 +30,7 @@ function App() {
             setBlogs(initialBlogs)
         }
         dataHook()
-    }, []);
+    }, [])
 
     useLayoutEffect(() => {
         const authHook = () => {
@@ -39,10 +39,10 @@ function App() {
             if (loggedUserToken) {
                 const token = JSON.parse(loggedUserToken)
 
-            setUser({
-                claim: JSON.parse(atob(token.split('.')[1])),
-                token: token
-            })
+                setUser({
+                    claim: JSON.parse(atob(token.split('.')[1])),
+                    token: token
+                })
 
             }
         }
@@ -70,8 +70,8 @@ function App() {
             setPassword('')
         } catch (error) {
             setMessage({
-                "text": error.response.data.error,
-                "type": "error"
+                'text': error.response.data.error,
+                'type': 'error'
             })
 
             setTimeout(() => {
@@ -108,8 +108,8 @@ function App() {
             setBlogs(blogs.concat(response))
 
             setMessage({
-                "text": `a new blog "${ blog.title }" added`,
-                "type": "info"
+                'text': `a new blog "${ blog.title }" added`,
+                'type': 'info'
             })
 
             setTimeout(() => {
@@ -118,8 +118,8 @@ function App() {
 
         } catch (error) {
             setMessage({
-                "text": error.response.data.error,
-                "type": "error"
+                'text': error.response.data.error,
+                'type': 'error'
             })
 
             setTimeout(() => {
@@ -130,7 +130,7 @@ function App() {
 
     const handleBlogLike = async (e) => {
         const selectBlogId = e.target.value
-        const selectedBlog = blogs.find(b => b.id === selectBlogId);
+        const selectedBlog = blogs.find(b => b.id === selectBlogId)
 
         const blog = {
             ...selectedBlog,
@@ -144,8 +144,8 @@ function App() {
 
         } catch (error) {
             setMessage({
-                "text": error.response.data.error,
-                "type": "error"
+                'text': error.response.data.error,
+                'type': 'error'
             })
 
             setTimeout(() => {
@@ -156,21 +156,21 @@ function App() {
 
     const handleBlogRemove = async (e) => {
         const selectBlogId = e.target.value
-        const selectedBlog = blogs.find(b => b.id === selectBlogId);
+        const selectedBlog = blogs.find(b => b.id === selectBlogId)
 
         const msg = `remove blog ${ selectedBlog.title }`
 
         try {
             if (window.confirm(msg) === true) {
                 blogServices.setToken(user.token)
-                const response = await blogServices.remove(selectBlogId)
+                await blogServices.remove(selectBlogId)
                 setBlogs(blogs.filter(b => b.id !== selectBlogId))
             }
 
         } catch (error) {
             setMessage({
-                "text": error.response.data.error,
-                "type": "error"
+                'text': error.response.data.error,
+                'type': 'error'
             })
 
             setTimeout(() => {
@@ -222,4 +222,4 @@ function App() {
     }
 }
 
-export default App;
+export default App

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 
 const BlogForm = ({ handleTitleChange, handleAuthorChange, handleUrlChange, handleAddBlog }) => {
@@ -64,3 +65,10 @@ const BlogForm = ({ handleTitleChange, handleAuthorChange, handleUrlChange, hand
 }
 
 export default BlogForm
+
+BlogForm.propTypes = {
+    handleTitleChange: PropTypes.func.isRequired,
+    handleAuthorChange: PropTypes.func.isRequired,
+    handleUrlChange: PropTypes.func.isRequired,
+    handleAddBlog: PropTypes.func.isRequired,
+}

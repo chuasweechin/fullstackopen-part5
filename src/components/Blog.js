@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 
 const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
@@ -13,10 +14,6 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
 
     const handleVisibleEvent = () => setVisible(!visible)
 
-    const hideWhenVisibleStyle = {
-        display: visible ? 'none' : ''
-    }
-
     const showWhenVisibleStyle = {
         display: visible ? '' : 'none'
     }
@@ -30,7 +27,7 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
                 <div style={ showWhenVisibleStyle }>
                     <div>
                         <div>
-                            <a href='#'>{ blog.url }</a>
+                            <a href='/'>{ blog.url }</a>
                         </div>
                         <div>
                             { blog.likes } likes
@@ -44,13 +41,13 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
 
                         {
                             user.claim.id === blog.user[0].id ?
-                            <div>
-                                <button value={ blog.id } onClick={ handleBlogRemove }>
-                                    remove
-                                </button>
-                            </div>
-                            :
-                            null
+                                <div>
+                                    <button value={ blog.id } onClick={ handleBlogRemove }>
+                                        remove
+                                    </button>
+                                </div>
+                                :
+                                null
                         }
 
                     </div>
@@ -62,3 +59,10 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
 }
 
 export default Blog
+
+Blog.propTypes = {
+    blog: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired,
+    handleBlogLike: PropTypes.func.isRequired,
+    handleBlogRemove: PropTypes.func.isRequired,
+}
