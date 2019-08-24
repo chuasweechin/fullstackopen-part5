@@ -25,6 +25,8 @@ function App() {
     useEffect(() => {
         const dataHook = async () => {
             const initialBlogs = await blogServices.getAll()
+            initialBlogs.sort((a, b) => b.likes - a.likes)
+
             setBlogs(initialBlogs)
         }
         dataHook()
