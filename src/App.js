@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
+import { useField } from './hooks'
 
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
@@ -11,14 +12,18 @@ import loginServices from './services/login'
 import './index.css'
 
 function App() {
+    const username = useField('text')
+    const password = useField('password')
+
+    const title = useField('text')
+    const author = useField('text')
+    const url = useField('text')
+
+    // const [title, setTitle] = useState('')
+    // const [author, setAuthor] = useState('')
+    // const [url, setUrl] = useState('')
+
     const [user, setUser] = useState(null)
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
-
     const [blogs, setBlogs] = useState([])
     const [message, setMessage] = useState(null)
 
@@ -53,9 +58,14 @@ function App() {
         e.preventDefault()
 
         const credential = {
-            username: username,
-            password: password
+            username: username.input.value,
+            password: password.input.value
         }
+
+        e.target.reset()
+
+        username.reset('')
+        password.reset('')
 
         try {
             const response = await loginServices.login(credential)
@@ -66,8 +76,6 @@ function App() {
                 token: response.token
             })
 
-            setUsername('')
-            setPassword('')
         } catch (error) {
             setMessage({
                 'text': error.response.data.error,
@@ -87,23 +95,25 @@ function App() {
 
     const handleAddBlog = async (e) => {
         e.preventDefault()
-        e.target.reset()
 
         const blog = {
-            title: title,
-            author: author,
-            url: url,
+            title: title.input.value,
+            author: author.input.value,
+            url: url.input.value,
             likes: 0,
             user: user.claim.id
         }
+
+        e.target.reset()
+
+        title.reset('')
+        author.reset('')
+        url.reset('')
 
         try {
             blogServices.setToken(user.token)
             const response = await blogServices.create(blog)
 
-            setTitle('')
-            setAuthor('')
-            setUrl('')
 
             setBlogs(blogs.concat(response))
 
@@ -184,8 +194,8 @@ function App() {
             <div>
                 { message !== null ? <Notification message={ message } /> : null }
                 <LoginForm
-                    handleUsernameChange={ (e) => setUsername(e.target.value) }
-                    handlePasswordChange={ (e) => setPassword(e.target.value) }
+                    username={ username }
+                    password={ password }
                     handleLogin={ (e) => handleLogin(e) }
                 />
             </div>
@@ -203,9 +213,9 @@ function App() {
                 </div>
 
                 <BlogForm
-                    handleTitleChange={ (e) => setTitle(e.target.value) }
-                    handleAuthorChange={ (e) => setAuthor(e.target.value) }
-                    handleUrlChange={ (e) => setUrl(e.target.value) }
+                    title={ title }
+                    author={ author }
+                    url={ url }
                     handleAddBlog={ (e) => handleAddBlog(e) }
                 />
 

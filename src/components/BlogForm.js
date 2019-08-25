@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 
-const BlogForm = ({ handleTitleChange, handleAuthorChange, handleUrlChange, handleAddBlog }) => {
+const BlogForm = ({ title, author, url, handleAddBlog }) => {
     const [visible, setVisible] = useState(false)
 
     const hideWhenVisibleStyle = {
@@ -24,27 +24,15 @@ const BlogForm = ({ handleTitleChange, handleAuthorChange, handleUrlChange, hand
                 >
                     <div>
                         title:
-                        <input
-                            name='title'
-                            type='text'
-                            onChange={ handleTitleChange }
-                        />
+                        <input name='title' { ...title.input }/>
                     </div>
                     <div>
                         author:
-                        <input
-                            name='author'
-                            type='text'
-                            onChange={ handleAuthorChange }
-                        />
+                        <input name='author' { ...author.input }/>
                     </div>
                     <div>
                         url:
-                        <input
-                            name='url'
-                            type='text'
-                            onChange={ handleUrlChange }
-                        />
+                        <input name='url' { ...url.input }/>
                     </div>
                     <div>
                         <button type="submit">Create</button>
@@ -67,8 +55,8 @@ const BlogForm = ({ handleTitleChange, handleAuthorChange, handleUrlChange, hand
 export default BlogForm
 
 BlogForm.propTypes = {
-    handleTitleChange: PropTypes.func.isRequired,
-    handleAuthorChange: PropTypes.func.isRequired,
-    handleUrlChange: PropTypes.func.isRequired,
+    title: PropTypes.object.isRequired,
+    author: PropTypes.object.isRequired,
+    url: PropTypes.object.isRequired,
     handleAddBlog: PropTypes.func.isRequired,
 }
