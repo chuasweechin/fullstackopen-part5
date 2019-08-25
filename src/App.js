@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
-import { useField } from './hooks'
+import { useField, useResource } from './hooks'
 
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 
-import blogServices from './services/blogs'
 import loginServices from './services/login'
 
 import './index.css'
@@ -19,12 +18,8 @@ function App() {
     const author = useField('text')
     const url = useField('text')
 
-    // const [title, setTitle] = useState('')
-    // const [author, setAuthor] = useState('')
-    // const [url, setUrl] = useState('')
-
+    const [blogs, blogServices] = useResource('http://localhost:3001/api/blogs')
     const [user, setUser] = useState(null)
-    const [blogs, setBlogs] = useState([])
     const [message, setMessage] = useState(null)
 
     useEffect(() => {
@@ -32,7 +27,7 @@ function App() {
             const initialBlogs = await blogServices.getAll()
             initialBlogs.sort((a, b) => b.likes - a.likes)
 
-            setBlogs(initialBlogs)
+            blogServices.setObjects(initialBlogs)
         }
         dataHook()
     }, [])
@@ -115,7 +110,7 @@ function App() {
             const response = await blogServices.create(blog)
 
 
-            setBlogs(blogs.concat(response))
+            blogServices.setObjects(blogs.concat(response))
 
             setMessage({
                 'text': `a new blog "${ blog.title }" added`,
@@ -150,7 +145,7 @@ function App() {
 
         try {
             const response = await blogServices.update(selectBlogId, blog)
-            setBlogs(blogs.map(b => b.id === selectBlogId ? response : b))
+            blogServices.setObjects(blogs.map(b => b.id === selectBlogId ? response : b))
 
         } catch (error) {
             setMessage({
@@ -174,7 +169,7 @@ function App() {
             if (window.confirm(msg) === true) {
                 blogServices.setToken(user.token)
                 await blogServices.remove(selectBlogId)
-                setBlogs(blogs.filter(b => b.id !== selectBlogId))
+                blogServices.setObjects(blogs.filter(b => b.id !== selectBlogId))
             }
 
         } catch (error) {
