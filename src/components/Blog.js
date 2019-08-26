@@ -24,18 +24,18 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
                 <div onClick={ handleVisibleEvent }>
                     { blog.title } - { blog.author }
                 </div>
-                <div style={ showWhenVisibleStyle }>
+                <div style={ showWhenVisibleStyle } className='togglableContent'>
                     <div>
-                        <div>
+                        <div className='url'>
                             <a href='/'>{ blog.url }</a>
                         </div>
-                        <div>
+                        <div className='likes'>
                             { blog.likes } likes
                             <button value={ blog.id } onClick={ handleBlogLike }>
                                 like
                             </button>
                         </div>
-                        <div>
+                        <div className='author'>
                             added by { blog.user[0].name }
                         </div>
 
