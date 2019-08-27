@@ -5,7 +5,7 @@ const LoginForm = ({ username, password, handleLogin }) => {
     return (
         <div>
             <h2>Log in to application</h2>
-            <form  onSubmit={ handleLogin }>
+            <form onSubmit={ handleLogin }>
                 <div>
                     username:
                     <input { ...username.input }/>

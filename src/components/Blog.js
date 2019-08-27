@@ -21,7 +21,7 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
     return (
         <div style={ blogStyle }>
             <div>
-                <div onClick={ handleVisibleEvent }>
+                <div onClick={ handleVisibleEvent } className='blog'>
                     { blog.title } - { blog.author }
                 </div>
                 <div style={ showWhenVisibleStyle } className='togglableContent'>

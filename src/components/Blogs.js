@@ -25,7 +25,7 @@ const Blogs = ({ user, blogs, handleBlogLike, handleBlogRemove }) => {
 
 export default Blogs
 
-Notification.propTypes = {
+Blogs.propTypes = {
     user: PropTypes.object.isRequired,
     blogs: PropTypes.array.isRequired,
     handleBlogLike: PropTypes.func.isRequired,
