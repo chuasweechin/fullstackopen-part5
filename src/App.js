@@ -75,6 +75,7 @@ function App() {
 
     const handleLogout = () => {
         setUser(null)
+        blogServices.destroyToken()
         window.localStorage.removeItem('token')
     }
 

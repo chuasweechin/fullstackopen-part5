@@ -40,6 +40,10 @@ export const useResource = (baseUrl) => {
         token = `bearer ${ newToken }`
     }
 
+    const destroyToken = () => {
+        token = null
+    }
+
     const create = async (newObject) => {
         const config = {
             headers: { Authorization: token },
@@ -66,6 +70,7 @@ export const useResource = (baseUrl) => {
         resources,
         {
             setToken,
+            destroyToken,
             create,
             update,
             remove
