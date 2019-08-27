@@ -31,7 +31,7 @@ describe('<App /> - no user logged', () => {
             () => component.getByText('Log In')
         )
 
-        expect(component.container).toHaveTextContent('Log In')
+        expect(component.container).not.toHaveTextContent('Singapore Laksa - Hot')
     })
 })
 
@@ -46,11 +46,8 @@ describe('<App /> - user logged', () => {
         )
 
         await waitForElement(
-            () => component.getByText('Logout')
+            () => component.getByText('Singapore Laksa - Hot')
         )
-
-        expect(component.container).not.toHaveTextContent('Log In')
-        expect(component.container).toHaveTextContent('Logout')
 
         expect(component.container).toHaveTextContent('Singapore Laksa - Hot')
     })
