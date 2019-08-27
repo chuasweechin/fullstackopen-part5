@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export const useField = (type) => {
     const [value, setValue] = useState('')
@@ -24,15 +24,20 @@ export const useField = (type) => {
 
 export const useResource = (baseUrl) => {
     let token = null
-    const [objects, setObjects] = useState([])
+    const [resources, setResources] = useState([])
+
+    useEffect(() => {
+        const dataHook = async () => {
+            axios.get(baseUrl).then(response => {
+                setResources(response.data)
+            })
+        }
+
+        dataHook()
+    }, [baseUrl])
 
     const setToken = newToken => {
         token = `bearer ${ newToken }`
-    }
-
-    const getAll = async () => {
-        const response = await axios.get(baseUrl)
-        return response.data
     }
 
     const create = async (newObject) => {
@@ -41,27 +46,26 @@ export const useResource = (baseUrl) => {
         }
 
         const response = await axios.post(baseUrl, newObject, config)
-        return response.data
+        setResources(resources.concat(response.data))
     }
 
     const update = async (id, newObject) => {
         const response = await axios.put(`${baseUrl}/${id}`, newObject)
-        return response.data
+        setResources(resources.map(r => r.id === id ? response.data : r))
     }
 
     const remove = (id) => {
         const config = {
-            headers: { Authorization: token },
+            headers: { Authorization: token }
         }
 
-        return axios.delete(`${baseUrl}/${id}`, config)
+        axios.delete(`${baseUrl}/${id}`, config)
+        setResources(resources.filter(r => r.id !== id))
     }
     return [
-        objects,
+        resources,
         {
-            setObjects,
             setToken,
-            getAll,
             create,
             update,
             remove

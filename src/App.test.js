@@ -31,8 +31,7 @@ describe('<App /> - no user logged', () => {
             () => component.getByText('Log In')
         )
 
-        const blogs = component.container.querySelectorAll('.blog')
-        expect(blogs.length).toBe(0)
+        expect(component.container).toHaveTextContent('Log In')
     })
 })
 
@@ -47,11 +46,12 @@ describe('<App /> - user logged', () => {
         )
 
         await waitForElement(
-            () => component.getByText('Singapore Laksa - Hot')
+            () => component.getByText('Logout')
         )
 
-        const blogs = component.container.querySelectorAll('.blog')
-        expect(blogs.length).toBe(3)
+        expect(component.container).not.toHaveTextContent('Log In')
+        expect(component.container).toHaveTextContent('Logout')
 
+        expect(component.container).toHaveTextContent('Singapore Laksa - Hot')
     })
 })

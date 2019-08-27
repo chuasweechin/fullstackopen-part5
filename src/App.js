@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import { useField, useResource } from './hooks'
 
 import Blogs from './components/Blogs'
@@ -21,16 +21,6 @@ function App() {
     const [blogs, blogServices] = useResource('http://localhost:3001/api/blogs')
     const [user, setUser] = useState(null)
     const [message, setMessage] = useState(null)
-
-    useEffect(() => {
-        const dataHook = async () => {
-            const initialBlogs = await blogServices.getAll()
-            initialBlogs.sort((a, b) => b.likes - a.likes)
-
-            blogServices.setObjects(initialBlogs)
-        }
-        dataHook()
-    }, [])
 
     useLayoutEffect(() => {
         const authHook = () => {
@@ -107,10 +97,7 @@ function App() {
 
         try {
             blogServices.setToken(user.token)
-            const response = await blogServices.create(blog)
-
-
-            blogServices.setObjects(blogs.concat(response))
+            await blogServices.create(blog)
 
             setMessage({
                 'text': `a new blog "${ blog.title }" added`,
@@ -144,8 +131,7 @@ function App() {
         }
 
         try {
-            const response = await blogServices.update(selectBlogId, blog)
-            blogServices.setObjects(blogs.map(b => b.id === selectBlogId ? response : b))
+            await blogServices.update(selectBlogId, blog)
 
         } catch (error) {
             setMessage({
@@ -169,7 +155,6 @@ function App() {
             if (window.confirm(msg) === true) {
                 blogServices.setToken(user.token)
                 await blogServices.remove(selectBlogId)
-                blogServices.setObjects(blogs.filter(b => b.id !== selectBlogId))
             }
 
         } catch (error) {
